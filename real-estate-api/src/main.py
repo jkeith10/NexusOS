@@ -58,7 +58,14 @@ with app.app_context():
     # Start automation engine
     automation_engine.start()
 
-@app.route('/', defaults={'path': ''})
+@app.route('/')
+def health_check():
+    return {"status": "healthy", "message": "Real Estate Nexus OS API is running"}, 200
+
+@app.route('/api/health')
+def api_health():
+    return {"status": "healthy", "message": "API endpoints are available"}, 200
+
 @app.route('/<path:path>')
 def serve(path):
     static_folder_path = app.static_folder
@@ -76,4 +83,5 @@ def serve(path):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
